@@ -8,6 +8,7 @@ const MBTiles = require('@mapbox/mbtiles');
 
 const dbName = 'germany';
 const port = 8080;
+const baseUrl = 'http://localhost:'+port;
 
 start()
 
@@ -21,12 +22,15 @@ async function start() {
 		switch (url[1]) {
 			case 'static':
 				let path = url.slice(2).join('/');
+				path = path.replaceAll('%20',' ');
 				if (!files.has(path)) return handleError();
-				res.writeHead(200).end(fs.readFileSync(files.get(path)))
+				let buffer = fs.readFileSync(files.get(path));
+				if (path.endsWith('style.json')) buffer = fixStyleDefinition(buffer);
+				res.writeHead(200).end(buffer)
 			return;
 			case 'tiles.json':
 				let data = await db.getInfo();
-				data.tiles = [`http://localhost:${port}/tiles/{z}/{x}/{y}.pbf`]
+				data.tiles = [baseUrl+'/tiles/{z}/{x}/{y}.pbf']
 				res.writeHead(200)
 				res.end(JSON.stringify(data, null, '\t'))
 			return;
@@ -87,5 +91,20 @@ function readFiles(folder) {
 			if (slug.startsWith('index.htm')) slug = '';
 			files.set(slug, entry);
 		})
+	}
+}
+
+function fixStyleDefinition(buffer) {
+	let data = JSON.parse(buffer);
+	for (let source of Object.values(data.sources)) source.url = fixUrl(source.url);
+	data.sprite = fixUrl(data.sprite);
+	data.glyphs = fixUrl(data.glyphs);
+	return Buffer.from(JSON.stringify(data));
+
+	function fixUrl(url) {
+		url = (new URL(url, baseUrl)).toString();
+		url = url.replaceAll('%7B', '{');
+		url = url.replaceAll('%7D', '}');
+		return url;
 	}
 }
