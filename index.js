@@ -103,8 +103,7 @@ function fixStyleDefinition(buffer) {
 
 	function fixUrl(url) {
 		url = (new URL(url, config.baseUrl)).toString();
-		url = url.replaceAll('%7B', '{');
-		url = url.replaceAll('%7D', '}');
+		url = decodeURI(url);
 		return url;
 	}
 }
