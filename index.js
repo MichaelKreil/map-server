@@ -21,6 +21,7 @@ async function start() {
 		switch (url[1]) {
 			case 'static':
 				let path = url.slice(2).join('/');
+				if (!path) path = '';
 				path = path.replaceAll('%20',' ');
 				if (!files.has(path)) return handleError();
 				let buffer = fs.readFileSync(files.get(path));
