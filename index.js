@@ -3,7 +3,7 @@
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
-const { resolve } = require('path');
+const { resolve, relative } = require('path');
 const MBTiles = require('@mapbox/mbtiles');
 
 const dbName = 'germany';
@@ -12,23 +12,43 @@ const port = 8080;
 start()
 
 async function start() {
+	const files = readFiles('docs');
 	const db = await loadDatabase()
-
 	http.createServer(handleRequest).listen(port, () => console.log('Listening at :'+port));
 
 	async function handleRequest(req, res) {
-		let parts = req.url.replace(/.*\//g,'').split('.');
-		const z = parseInt(parts[0], 10);
-		const x = parseInt(parts[1], 10);
-		const y = parseInt(parts[2], 10);
+		let url = req.url.split('/');
+		switch (url[1]) {
+			case 'static':
+				let path = url.slice(2).join('/');
+				if (!files.has(path)) return handleError();
+				res.writeHead(200).end(fs.readFileSync(files.get(path)))
+			return;
+			case 'tiles.json':
+				let data = await db.getInfo();
+				data.tiles = [`http://localhost:${port}/tiles/{z}/{x}/{y}.pbf`]
+				res.writeHead(200)
+				res.end(JSON.stringify(data, null, '\t'))
+			return;
+			case 'tiles':
+				const z = parseInt(url[2], 10);
+				const x = parseInt(url[3], 10);
+				const y = parseInt(url[4].replace(/\..*/,''), 10);
 
-		try {
-			const { buffer, headers } = await db.get(z, x, y)
-			res.writeHead(200, headers)
-			res.end(buffer)
-		} catch (error) {
+				try {
+					const { buffer, headers } = await db.get(z, x, y)
+					res.writeHead(200, headers)
+					res.end(buffer)
+				} catch (error) {
+					handleError(error)
+				}
+			return;
+		}
+		handleError();
+
+		function handleError() {
 			res.writeHead(404)
-			res.end('tile not found^')
+			res.end('not found')
 		}
 	}
 }
@@ -38,19 +58,34 @@ function loadDatabase() {
 		let filename = resolve(__dirname, 'db', dbName + '.mbtiles');
 		new MBTiles(filename, (err, mbtiles) => {
 			if (err) throw err;
-
-			mbtiles
-
-			let db = { get }
-			resLoad(db);
+			resLoad({ get, getInfo });
 
 			function get(z, x, y) {
 				return new Promise(resGet => 
-					mbtiles.getTile(z, x, y, (err, buffer, headers) => 
-						resGet({buffer, headers})
-					)
+					mbtiles.getTile(z, x, y, (err, buffer, headers) => resGet({buffer, headers}))
+				)
+			}
+			function getInfo() {
+				return new Promise(resGet => 
+					mbtiles.getInfo((err, info) => resGet(info))
 				)
 			}
 		})
 	})
+}
+
+function readFiles(folder) {
+	let files = new Map();
+	scan(resolve(__dirname, folder));
+	return files;
+
+	function scan(fol) {
+		fs.readdirSync(fol).forEach(entry => {
+			entry = resolve(fol, entry);
+			if (fs.statSync(entry).isDirectory()) return scan(entry)
+			let slug = relative(folder, entry);
+			if (slug.startsWith('index.htm')) slug = '';
+			files.set(slug, entry);
+		})
+	}
 }
