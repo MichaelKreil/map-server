@@ -8,6 +8,10 @@ const MBTiles = require('@mapbox/mbtiles');
 
 const config = require('./config.js');
 
+const corsHeader = {
+	'Access-Control-Allow-Origin': '*',
+}
+
 start()
 
 async function start() {
@@ -26,12 +30,12 @@ async function start() {
 				if (!files.has(path)) return handleError();
 				let buffer = fs.readFileSync(files.get(path));
 				if (path.endsWith('style.json')) buffer = fixStyleDefinition(buffer);
-				res.writeHead(200).end(buffer)
+				res.writeHead(200, corsHeader).end(buffer)
 			return;
 			case 'tiles.json':
 				let data = await db.getInfo();
 				data.tiles = [config.baseUrl+'/tiles/{z}/{x}/{y}.pbf']
-				res.writeHead(200)
+				res.writeHead(200, corsHeader)
 				res.end(JSON.stringify(data, null, '\t'))
 			return;
 			case 'tiles':
@@ -41,6 +45,7 @@ async function start() {
 
 				try {
 					const { buffer, headers } = await db.get(z, x, y)
+					Object.assign(headers, corsHeader);
 					res.writeHead(200, headers)
 					res.end(buffer)
 				} catch (error) {
