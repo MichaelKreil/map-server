@@ -6,16 +6,15 @@ const https = require('https');
 const { resolve, relative } = require('path');
 const MBTiles = require('@mapbox/mbtiles');
 
-const dbName = 'germany';
-const port = 8080;
-const baseUrl = 'http://localhost:'+port;
+const config = require('./config.js');
 
 start()
 
 async function start() {
 	const files = readFiles('docs');
-	const db = await loadDatabase()
-	http.createServer(handleRequest).listen(port, () => console.log('Listening at :'+port));
+	const db = await loadDatabase();
+
+	http.createServer(handleRequest).listen(config.port, () => console.log('Listening at :'+config.port));
 
 	async function handleRequest(req, res) {
 		let url = req.url.split('/');
@@ -30,7 +29,7 @@ async function start() {
 			return;
 			case 'tiles.json':
 				let data = await db.getInfo();
-				data.tiles = [baseUrl+'/tiles/{z}/{x}/{y}.pbf']
+				data.tiles = [config.baseUrl+'/tiles/{z}/{x}/{y}.pbf']
 				res.writeHead(200)
 				res.end(JSON.stringify(data, null, '\t'))
 			return;
@@ -59,7 +58,7 @@ async function start() {
 
 function loadDatabase() {
 	return new Promise(resLoad => {
-		let filename = resolve(__dirname, 'db', dbName + '.mbtiles');
+		let filename = resolve(__dirname, 'db', config.dbName + '.mbtiles');
 		new MBTiles(filename, (err, mbtiles) => {
 			if (err) throw err;
 			resLoad({ get, getInfo });
@@ -102,7 +101,7 @@ function fixStyleDefinition(buffer) {
 	return Buffer.from(JSON.stringify(data));
 
 	function fixUrl(url) {
-		url = (new URL(url, baseUrl)).toString();
+		url = (new URL(url, config.baseUrl)).toString();
 		url = url.replaceAll('%7B', '{');
 		url = url.replaceAll('%7D', '}');
 		return url;
