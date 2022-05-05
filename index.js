@@ -22,7 +22,7 @@ async function start() {
 			case 'static':
 				let path = url.slice(2).join('/');
 				if (!path) path = '';
-				path = path.replaceAll('%20',' ');
+				path = decodeURI(path);
 				if (!files.has(path)) return handleError();
 				let buffer = fs.readFileSync(files.get(path));
 				if (path.endsWith('style.json')) buffer = fixStyleDefinition(buffer);
