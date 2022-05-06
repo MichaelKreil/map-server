@@ -1,6 +1,5 @@
 'use strict'
 
-const http = require('http');
 const https = require('https');
 
 const config = require('./config.js');
@@ -14,7 +13,12 @@ async function start() {
 	const { handleStyleRequest } = await require('./lib/serve-style.js');
 	const { handleStatusRequest } = await require('./lib/serve-status.js');
 
-	http.createServer(handleRequest).listen(config.port, () => console.log('Listening at :'+config.port));
+	https
+		.createServer({
+			key: fs.readFileSync('cert/privkey.pem'),
+			cert: fs.readFileSync('cert/fullchain.pem'),
+		}, handleRequest)
+		.listen(config.port, () => console.log('Listening at: '+config.port));
 
 	async function handleRequest(req, res) {
 		let path = req.url.replace(/^\/*/,'').split('/');
