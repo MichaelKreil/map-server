@@ -6,9 +6,10 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "",
+  "author": "Michael Kreil (SWR)",
   "license": "ISC",
   "dependencies": {
     "@mapbox/mbtiles": "^0.12.1"
-  }
+  },
+  "private": true
 }
