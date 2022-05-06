@@ -27,7 +27,7 @@
 			"url": "/tiles.json"
 		}
 	},
-	"sprite": "/static/styles/positron/sprite",
+	"sprite": "/styles/positron/sprite",
 	"glyphs": "/static/fonts/{fontstack}/{range}.pbf",
 	"layers": [
 		{
