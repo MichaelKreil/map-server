@@ -4,8 +4,8 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 
+const { parseEncodings } = require('./lib/encodings.js');
 const config = require('./config.js');
-
 
 start()
 
@@ -27,16 +27,16 @@ async function start() {
 	server.listen(config.port, () => console.log('Listening at: '+config.port));
 
 	async function handleRequest(req, res) {
-		let path = req.url.replace(/^\/*/,'').split('/');
-		let main = path[0];
-		path = path.slice(1);
+		req.path = req.url.replace(/^\/*/,'').split('/');
+		let main = req.path.shift();
+		req.encodings = parseEncodings(req);
 		switch (main) {
-			case 'tiles': return handleTileRequest(path, res);
-			case 'static': return handleFileRequest(path, res);
-			case 'styles': return handleStyleRequest(path, res);
-			case 'tiles.json': return handleTileMetaRequest(path, res);
-			case 'status': return handleStatusRequest(path, res);
-			case '': return res.end('running')
+			case 'tiles': return handleTileRequest(req, res);
+			case 'static': return handleFileRequest(req, res);
+			case 'styles': return handleStyleRequest(req, res);
+			case 'tiles.json': return handleTileMetaRequest(req, res);
+			case 'status': return handleStatusRequest(req, res);
+			case '': return res.writeHead(200).end('running')
 		}
 		res.writeHead(404);
 		res.end('unknown request '+req.url)

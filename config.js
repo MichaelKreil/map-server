@@ -3,8 +3,8 @@
 module.exports = {
 	dbName: 'germany',
 	port: 8080,
-	baseUrl: 'https://karten.party',
+	baseUrl: 'http://localhost:8080',
 	corsHeader: { 'Access-Control-Allow-Origin': '*' },
-	useCaching: false,
+	useCaching: true,
 	useSSL: false,
 }
