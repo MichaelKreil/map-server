@@ -1,5 +1,5 @@
 
 config.js
 /cert/*.pem
-/database/
+/database/*.mbtiles
 /node_modules/
