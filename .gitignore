@@ -1,4 +1,5 @@
 
+config.js
 /cert/*.pem
 /database/
 /node_modules/
