@@ -5,6 +5,6 @@ module.exports = {
 	port: 8080,
 	baseUrl: 'http://localhost:8080',
 	corsHeader: { 'Access-Control-Allow-Origin': '*' },
-	useCaching: true,
+	useCaching: false,
 	useSSL: false,
 }
