@@ -1,6 +1,7 @@
 'use strict'
 
 const fs = require('fs');
+const http = require('http');
 const https = require('https');
 
 const config = require('./config.js');
@@ -14,12 +15,16 @@ async function start() {
 	const { handleStyleRequest } = await require('./lib/serve-style.js');
 	const { handleStatusRequest } = await require('./lib/serve-status.js');
 
-	https
-		.createServer({
+	let server;
+	if (config.useSSL) {
+		server = https.createServer({
 			key: fs.readFileSync('cert/privkey.pem'),
 			cert: fs.readFileSync('cert/fullchain.pem'),
 		}, handleRequest)
-		.listen(config.port, () => console.log('Listening at: '+config.port));
+	} else {
+		server = http.createServer(handleRequest);
+	}
+	server.listen(config.port, () => console.log('Listening at: '+config.port));
 
 	async function handleRequest(req, res) {
 		let path = req.url.replace(/^\/*/,'').split('/');
@@ -31,7 +36,7 @@ async function start() {
 			case 'styles': return handleStyleRequest(path, res);
 			case 'tiles.json': return handleTileMetaRequest(path, res);
 			case 'status': return handleStatusRequest(path, res);
-			case '': return res.end('willkommen')
+			case '': return res.end('running')
 		}
 		res.writeHead(404);
 		res.end('unknown request '+req.url)
