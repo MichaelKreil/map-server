@@ -2,12 +2,17 @@
 
 # on Hetzner, port 80
 
+nvm install --lts
+nvm use --lts
 git clone https://github.com/MichaelKreil/map-server.git
 cd map-server
+npm i
 cp config.example-hetzner.js config.js
 mkdir database
 cd database
 aria2c "magent:uri???????"
+cd ..
+npm start
 
 
 

@@ -2,7 +2,7 @@
 
 module.exports = {
 	dbName: 'planet',
-	port: 80,
+	port: 8080,
 	baseUrl: 'https://karten.party',
 	corsHeader: { 'Access-Control-Allow-Origin': '*' },
 	useCaching: true,
