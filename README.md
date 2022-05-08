@@ -1,16 +1,42 @@
-# map-server
+# install map-server
 
-# on Hetzner Port 80
+# on Hetzner, port 80
 
 git clone https://github.com/MichaelKreil/map-server.git
 cd map-server
 cp config.example-hetzner.js config.js
 mkdir database
 cd database
-wget -O planet.torrent "https://archive.org/download/osm-2017-07-03-planet.mbtiles/osm-2017-07-03-planet.mbtiles_archive.torrent"
-aria2c --show-files planet.torrent
-aria2c -o planet.mbtiles --select-file=1 planet.torrent
+aria2c "magent:uri???????"
 
+
+
+apt install transmission-cli
+
+# distribute new mbtiles file
+
+## uploading to archive
+
+curl -LOs https://archive.org/download/ia-pex/ia
+chmod +x ia
+./ia configure
+./ia upload osm-planet-2022-04-30.mbtiles osm-planet-2022-04-30.mbtiles
+
+extract webseeds from IA torrent file
+
+## creating torrent
+
+torf osm-planet-2022-04-30.mbtiles
+-n osm-planet-2022-04-30.mbtiles
+-c "vector tiles, as MBTiles file, covering the planet, based on OpenStreetMap, from 2022-04-30, converted with OpenMapTiles, by Michael Kreil"
+-d 2022-04-30
+-t http://tracker.openbittorrent.com:80/announce,udp://9.rarbg.com:2810/announce,udp://exodus.desync.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.openbittorrent.com:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.torrent.eu.org:451/announce,udp://tracker2.dler.org:80/announce,udp://www.torrent.eu.org:451/announce
+-w https://archive.org/download/,http://ia902500.us.archive.org/13/items/
+-o osm-planet-2022-04-30.mbtiles.torrent
+
+## seeding torrent
+
+aria2c -V --seed-ratio=0.0 germany-2022.mbtiles.torrent
 
 # other notes
 
