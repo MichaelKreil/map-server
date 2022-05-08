@@ -1,3 +1,20 @@
+# map-server
+
+# on Hetzner Port 80
+
+git clone https://github.com/MichaelKreil/map-server.git
+cd map-server
+cp config.example-hetzner.js config.js
+mkdir database
+cd database
+wget -O planet.torrent "https://archive.org/download/osm-2017-07-03-planet.mbtiles/osm-2017-07-03-planet.mbtiles_archive.torrent"
+aria2c --show-files planet.torrent
+aria2c -o planet.mbtiles --select-file=1 planet.torrent
+
+
+# other notes
+
+
 
 
 oder komplett in GC und Daten im Bucket?
