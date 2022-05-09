@@ -29,14 +29,22 @@ chmod +x ia
 
 extract webseeds from IA torrent file
 
+## uploading to digital ocean
+
+https://docs.digitalocean.com/products/spaces/resources/s3cmd/
+s3cmd -v put osm-planet-2022-04-30.geojsonl.xz s3://michaelkreil/osm/
+
 ## creating torrent
 
-torf osm-planet-2022-04-30.mbtiles
--n osm-planet-2022-04-30.mbtiles
--c "vector tiles, as MBTiles file, covering the planet, based on OpenStreetMap, from 2022-04-30, converted with OpenMapTiles, by Michael Kreil"
--d 2022-04-30
--t http://tracker.openbittorrent.com:80/announce,udp://9.rarbg.com:2810/announce,udp://exodus.desync.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.openbittorrent.com:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.torrent.eu.org:451/announce,udp://tracker2.dler.org:80/announce,udp://www.torrent.eu.org:451/announce
--w https://archive.org/download/,http://ia902500.us.archive.org/13/items/
+pip install torf-cli
+/usr/local/bin/torf osm-planet-2022-04-30.mbtiles \
+-n osm-planet-2022-04-30.mbtiles \
+-c "vector tiles, as MBTiles file, covering the planet, based on OpenStreetMap, from 2022-04-30, converted with OpenMapTiles, by Michael Kreil, © OpenStreetMap contributors" \
+-d 2022-04-30 \
+-t http://tracker.openbittorrent.com:80/announce,udp://9.rarbg.com:2810/announce,udp://exodus.desync.com:6969/announce,udp://tracker.moeking.me:6969/announce,udp://tracker.openbittorrent.com:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://tracker.theoks.net:6969/announce,udp://tracker.torrent.eu.org:451/announce,udp://tracker2.dler.org:80/announce,udp://www.torrent.eu.org:451/announce \
+-w https://archive.org/download/osm-planet-2022-04-30.mbtiles/ \
+-w http://ia902507.us.archive.org/3/items/osm-planet-2022-04-30.mbtiles/ \
+-w https://michaelkreil.fra1.digitaloceanspaces.com/osm/ \
 -o osm-planet-2022-04-30.mbtiles.torrent
 
 ## seeding torrent
