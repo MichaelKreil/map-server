@@ -17,5 +17,4 @@
 # todos for myself
 
 - [node as background service](https://stackoverflow.com/questions/4018154/how-do-i-run-a-node-js-app-as-a-background-service)
-- generate CORS list
-- set http headers for caching
+- add CORS domain list
