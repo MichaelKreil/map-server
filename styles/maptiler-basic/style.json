@@ -12,6 +12,7 @@
 			"url": "/tiles.json"
 		}
 	},
+	"sprite": "/styles/maptiler-basic/sprite",
 	"glyphs": "/static/fonts/{fontstack}/{range}.pbf",
 	"layers": [
 		{
@@ -1536,41 +1537,6 @@
 					"==",
 					"rank",
 					1
-				]
-			],
-			"layout": {
-				"icon-size": 1,
-				"text-anchor": "top",
-				"text-field": "{name:latin}\n{name:nonlatin}",
-				"text-font": [
-					"Noto Sans Regular"
-				],
-				"text-max-width": 8,
-				"text-offset": [
-					0,
-					0.5
-				],
-				"text-size": 11,
-				"visibility": "visible"
-			},
-			"paint": {
-				"text-color": "#666",
-				"text-halo-blur": 1,
-				"text-halo-color": "rgba(255,255,255,0.75)",
-				"text-halo-width": 1
-			}
-		},
-		{
-			"id": "airport-label",
-			"type": "symbol",
-			"source": "opentilemaps",
-			"source-layer": "aerodrome_label",
-			"minzoom": 10,
-			"filter": [
-				"all",
-				[
-					"has",
-					"iata"
 				]
 			],
 			"layout": {
