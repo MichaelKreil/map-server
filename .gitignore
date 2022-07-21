@@ -1,6 +1,3 @@
 
-config.js
-/cert/*.pem
-/database/*.mbtiles
-/database/*.xz
+/tiles/
 /node_modules/
