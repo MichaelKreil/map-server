@@ -3,7 +3,8 @@
   "version": "2.0.0",
   "description": "",
   "scripts": {
-    "prestart": "node 1_setup.js"
+    "prestart": "node ./bin/1_setup.js",
+	 "start": "node ./bin/2_server.js"
   },
   "author": "Michael Kreil (SWR)",
   "license": "MIT",
